@@ -10,6 +10,9 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
 
+import com.example.whatsappclone.User.UserListAdapter;
+import com.example.whatsappclone.User.UserObject;
+import com.example.whatsappclone.Utils.CountryToPhonePrefix;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,7 +54,7 @@ public class FindUserActivity extends AppCompatActivity {
             phone = phone.replace(")","");
             if(!String.valueOf(phone.charAt(0)).equals("+"))
                 phone = ISOPrefix + phone;
-            UserObject contact = new UserObject(name, phone);
+            UserObject contact = new UserObject("",name, phone);
             contactList.add(contact);
             getUserDetails(contact);
         }
@@ -71,7 +74,15 @@ public class FindUserActivity extends AppCompatActivity {
                         if(childSnapshot.child("name").getValue() != null)
                             name = childSnapshot.child("name").getValue().toString();
 
-                        UserObject User = new UserObject(name, phone);
+                        UserObject User = new UserObject(childSnapshot.getKey(), name, phone);
+
+                        if(name.equals(phone)){
+                            for(UserObject contactIterator:contactList){
+                                if(contactIterator.getPhone().equals(User.getPhone())){
+                                    User.setName(contactIterator.getName());
+                                }
+                            }
+                        }
                         userList.add(User);
                         userListAdapter.notifyDataSetChanged();
                         return;
