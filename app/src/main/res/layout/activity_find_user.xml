@@ -11,7 +11,7 @@
     tools:context=".FindUserActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/userList"
+        android:id="@+id/listViewContact"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
