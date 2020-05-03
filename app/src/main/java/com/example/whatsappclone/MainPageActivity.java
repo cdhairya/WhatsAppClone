@@ -31,13 +31,15 @@ public class MainPageActivity extends AppCompatActivity {
     private RecyclerView.Adapter chatListAdapter;
     private RecyclerView.LayoutManager chatListLayoutManager;
 
-    ArrayList<ChatObject>  chatList;
+    ArrayList<ChatObject> chatList;
 
     Button btnLogout, btnFindUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
+
+        chatList = new ArrayList<>();
 
         btnLogout = findViewById(R.id.btnLogout);
         btnFindUser = findViewById(R.id.btnFindUser);

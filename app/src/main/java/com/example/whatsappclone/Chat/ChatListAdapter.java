@@ -10,9 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.whatsappclone.R;
-import com.example.whatsappclone.Chat.ChatObject;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -20,7 +17,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
 
     ArrayList<ChatObject> chats;
 
-    public ChatListAdapter(ArrayList<ChatObject> users) {
+    public ChatListAdapter(ArrayList<ChatObject> chats) {
         this.chats = chats;
     }
 
