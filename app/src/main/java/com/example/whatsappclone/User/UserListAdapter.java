@@ -61,7 +61,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.UserLi
             super(view);
             name = view.findViewById(R.id.name);
             phone = view.findViewById(R.id.phone);
-            linearLayout = view.findViewById(R.id.linearLayout);
+            linearLayout = view.findViewById(R.id.layout);
         }
     }
 }

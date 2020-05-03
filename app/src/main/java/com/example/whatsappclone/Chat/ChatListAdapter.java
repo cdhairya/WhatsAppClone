@@ -55,7 +55,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ChatLi
         public ChatListViewHolder(View view) {
             super(view);
             mTitle = view.findViewById(R.id.title);
-            linearLayout = view.findViewById(R.id.linearLayout);
+            linearLayout = view.findViewById(R.id.layout);
         }
     }
 }
