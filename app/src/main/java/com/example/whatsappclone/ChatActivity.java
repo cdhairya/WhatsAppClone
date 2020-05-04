@@ -6,12 +6,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.whatsappclone.Chat.ChatObject;
+import com.example.whatsappclone.Chat.MediaAdapter;
 import com.example.whatsappclone.Chat.MessageAdapter;
 import com.example.whatsappclone.Chat.MessageObject;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,9 +29,9 @@ import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerViewMsg;
-    private RecyclerView.Adapter chatAdapter;
-    private RecyclerView.LayoutManager chatLayoutManager;
+    private RecyclerView recyclerViewMsg, recyclerViewMedia;
+    private RecyclerView.Adapter chatAdapter, mediaAdapter;
+    private RecyclerView.LayoutManager chatLayoutManager, mediaLayoutManager;
 
     ArrayList<MessageObject> messageList;
     String chatID;
@@ -44,13 +46,21 @@ public class ChatActivity extends AppCompatActivity {
         chatDB = FirebaseDatabase.getInstance().getReference().child("chat").child(chatID);
 
         Button send = findViewById(R.id.send);
+        Button addMedia = findViewById(R.id.addMedia);
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendMessage();
             }
         });
-        initializeRecyclerView();
+        addMedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGallery();
+            }
+        });
+        initializeMessage();
+        initializeMedia();
         getChatMessages();
     }
 
@@ -103,7 +113,7 @@ public class ChatActivity extends AppCompatActivity {
         etMessage.setText(null);
     }
 
-    private void initializeRecyclerView() {
+    private void initializeMessage() {
         messageList = new ArrayList<>();
         recyclerViewMsg = findViewById(R.id.recyclerViewMsg);
         recyclerViewMsg.setNestedScrollingEnabled(false);
@@ -112,5 +122,43 @@ public class ChatActivity extends AppCompatActivity {
         recyclerViewMsg.setLayoutManager(chatLayoutManager);
         chatAdapter = new MessageAdapter(messageList);
         recyclerViewMsg.setAdapter(chatAdapter);
+    }
+
+    int PICK_IMAGE_INTENT = 1;
+    ArrayList<String> mediaUriList = new ArrayList<>();
+
+    private void initializeMedia() {
+        messageList = new ArrayList<>();
+        recyclerViewMedia = findViewById(R.id.recyclerViewMedia);
+        recyclerViewMedia.setNestedScrollingEnabled(false);
+        recyclerViewMedia.setHasFixedSize(false);
+        mediaLayoutManager = new LinearLayoutManager(getApplicationContext(), RecyclerView.HORIZONTAL, false);
+        recyclerViewMedia.setLayoutManager(mediaLayoutManager);
+        mediaAdapter = new MediaAdapter(getApplicationContext(), mediaUriList);
+        recyclerViewMedia.setAdapter(mediaAdapter);
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select picture(s)"),PICK_IMAGE_INTENT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            if(requestCode == PICK_IMAGE_INTENT){
+                if(data.getClipData() == null) mediaUriList.add(data.getData().toString());
+                else {
+                    for(int i = 0; i < data.getClipData().getItemCount(); i++){
+                        mediaUriList.add(data.getClipData().getItemAt(i).getUri().toString());
+                    }
+                }
+                mediaAdapter.notifyDataSetChanged();
+            }
+        }
     }
 }
