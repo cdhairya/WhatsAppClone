@@ -3,6 +3,7 @@ package com.example.whatsappclone.Chat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -10,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.whatsappclone.R;
+import com.stfalcon.frescoimageviewer.ImageViewer;
 
 import java.util.ArrayList;
 
@@ -35,6 +37,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     public void onBindViewHolder(@NonNull final MessageViewHolder holder, final int position) {
         holder.message.setText(messageList.get(position).getMessage());
         holder.sender.setText(messageList.get(position).getSenderId());
+        if(messageList.get(holder.getAdapterPosition()).getMediaUrlList().isEmpty())
+            holder.viewMedia.setVisibility(View.GONE);
+        holder.viewMedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new ImageViewer.Builder(v.getContext(), messageList.get(holder.getAdapterPosition()).getMediaUrlList())
+                        .setStartPosition(0)
+                        .show();
+            }
+        });
     }
 
     @Override
@@ -44,12 +56,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     class MessageViewHolder extends RecyclerView.ViewHolder{
         TextView message, sender;
+        Button viewMedia;
         public LinearLayout linearLayout;
         public MessageViewHolder(View view) {
             super(view);
             message = view.findViewById(R.id.message);
             sender = view.findViewById(R.id.sender);
             linearLayout = view.findViewById(R.id.layout);
+            viewMedia = view.findViewById(R.id.viewMedia);
         }
     }
 }
